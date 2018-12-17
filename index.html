@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="Windows-1252" />
+ <title>IrS2reader - Web app</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1" />
+ <!--<script src="xvigas_txt_en.js"></script>-->
+ <script src="irs2reader.js"></script>
+ <link rel="stylesheet" media="screen" href="http://openfontlibrary.org/face/comic-relief" type="text/css"/>
+ <link rel="stylesheet" href="irs2reader.css" type="text/css" />
+ <!--<link rel="stylesheet" href="xvigas_graf.css" type="text/css" />
+ <link rel="icon" type="image/x-icon" href="xvigas.ico" />
+ <link rel="apple-touch-icon" href="xvigas_ios.png" />-->
+ <meta name="description" content="IS2 basic file reader">
+ <meta name="keywords" content="Infrared imaging">
+ <meta name="author" content="pwnage2apps">
+</head>
+
+<body>
+<header>
+  <div class="aviso_vertical">If you visit IrS2reader web app from a smart phone, is recommended to place it in landscape position.</div>
+  <!--<div class="lang"><span class="globo"></span> &nbsp; EN · <a href="xvigas.html" title="Spanish version">ES</a></div>-->
+   <h1 class="logo_txt"><span class="logotipo"></span><span class="letra1">I</span>rS2reader</h1>
+  <p class="beta_webapp logo_txt">WEBAPP &nbsp;&nbsp;&nbsp; (beta)</p>
+ <nav><ul>
+  <!--<li><a href="fuente.html">About...</a></li>
+  <li><a href="help.html">Help</a></li>
+  <li><a href="teoria.html">Teoría</a></li>-->
+ </ul></nav>
+ <p class="inicio">IrS2reader is a free .IS2 infrared image reader (web application). IrS2reader displays adds.<br>This app is bassed on <a href="https://www.w3schools.com/tags/canvas_createimagedata.asp">W3schools Create imagedata</a> and <a href="https://www.html5rocks.com/en/tutorials/file/dndfiles/">this file reader from HTML5 rocks</a>.</p>
+ <p>Also it is based on:<ul><li><a href="https://es.mathworks.com/matlabcentral/fileexchange/27915-fluke-is2-file-reader">This script to open .IS2 files</a>.</li><li><a href="https://es.mathworks.com/matlabcentral/fileexchange/32352-readis2-import-is2-files-fluke-infrared-camera">This script to open .IS2 files</a>.</li></ul></p>
+ <p>Licencia GPL v3, puede bajar el código fuente <a href="fuente.html">aquí.</a><br>This page uses cookies in advertisements, more information <a href="../cookies.html">here.</a></p>
+
+
+
+</header>
+
+
+<h2>Select a file:</h2>
+<div><input type="file" id="files" name="file" /> Read bytes: 
+<button onclick="readBlob(); return false;">Leer / Read</button></div>
+<h2>Results:</h2>
+<div class="datos">
+<table class="datos">
+<tr><td>Date</td><td><span id="span_fecha">-</span></td></tr>
+<tr><td>Hour</td><td><span id="span_hora">-</span></td></tr>
+<tr><td>Visible X (px)</td><td><span id="span_visible_x">-</span></td></tr>
+<tr><td>Visible Y (px)</td><td><span id="span_visible_y">-</span></td></tr>
+<tr><td>Ir X (px)</td><td><span id="span_ir_x">-</span></td></tr>
+<tr><td>Ir Y (px)</td><td><span id="span_ir_y">-</span></td></tr>
+</table>
+
+</div>
+<div class="div_visible"><canvas id="canvas_visible" width="640" height="480"></canvas></div>
+<div class="zoom"><button onclick="zoom_canvas('+'); return false;">+</button>Zoom: <span id="span_zoom">1</span><button onclick="zoom_canvas('-'); return false;">-</button></div>
+<div class="div_ir_grupo">
+<div id="div_ir1"><canvas id="canvas_ir3" width="160" height="120" class="canvas_ir"></canvas></div><br>
+<div id="div_ir2"><canvas id="canvas_ir2" width="160" height="120" class="canvas_ir"></canvas></div><br>
+<div id="div_ir3"><canvas id="canvas_ir1" width="160" height="120" class="canvas_ir"></canvas></div></div>
+</body></html>
