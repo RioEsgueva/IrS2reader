@@ -23,32 +23,56 @@ function readBlob() {
   // If we use onloadend, we need to check the readyState.
   reader_visible.onloadend = function(evt) {
     if (evt.target.readyState == FileReader.DONE) { // DONE == 2
-      var inicio_visible=512;
+      var inicio_visible_img=[512, 1024, 512]; /* Fix values por tipo_fichero==2 */
+      var inicio_visible_ancho=[286, 514, 2930];
+      var inicio_visible_alto=[284, 516, 2932];
+      var inicio_ir_img=[614998, 615688, 614998];
+      var inicio_ir_ancho=[176, 615500, 7984];
+      var inicio_ir_alto=[178, 615502, 7986];
+      var inicio_fecha_a=[224, 615548, 2937];
+      var inicio_fecha_d=[226, 615550, 2936];
+      var inicio_fecha_m=[227, 615551, 2937];
+      var inicio_fecha_msec=[228, 615552, 2934];
+      var tipo_fichero;
       var lectura;
-      var char_a, char_b, char_c, char_d;
+      var char_a, char_b, char_c, char_d, datos_de_inicio;
       var rrr, ggg, bbb;
 
-
-      lectura = 176;
+      lectura=8;
+      char_a = evt.target.result.charCodeAt(lectura);
+      char_b = evt.target.result.charCodeAt(lectura+1);
+      char_c = evt.target.result.charCodeAt(lectura+2);
+      char_d = evt.target.result.charCodeAt(lectura+3);
+      datos_de_inicio = (char_a << 8) | char_b;
+      datos_de_inicio = (datos_de_inicio << 8) | char_c;
+      datos_de_inicio = (datos_de_inicio << 8) | char_d;
+      if(datos_de_inicio == 983109){ /*65537*/
+        tipo_fichero = 0;
+      }else if(datos_de_inicio == 1507327){
+        tipo_fichero = 1;
+      }else{
+        tipo_fichero = 1;
+      }
+      lectura = inicio_ir_ancho[tipo_fichero];//176;
       char_a = evt.target.result.charCodeAt(lectura);
       char_b = evt.target.result.charCodeAt(lectura+1);
       var ancho_ir = (char_a << 8) + char_b;
-      lectura = 178;
+      lectura = inicio_ir_alto[tipo_fichero];//178;
       char_a = evt.target.result.charCodeAt(lectura);
       char_b = evt.target.result.charCodeAt(lectura+1);
       var alto_ir = (char_a << 8) + char_b;
       //alert("Ancho: " + ancho_ir + "  Alto: " + alto_ir);
-      lectura = 224;
+      lectura = inicio_fecha_a[tipo_fichero];//224;
       char_a = evt.target.result.charCodeAt(lectura);
       char_b = evt.target.result.charCodeAt(lectura+1);
       var fecha_a = (char_a << 8) + char_b;
-      lectura = 226;
+      lectura = inicio_fecha_m[tipo_fichero];//226;
       char_a = evt.target.result.charCodeAt(lectura);
       var fecha_m = char_a;
-      lectura = 227;
+      lectura = inicio_fecha_d[tipo_fichero];//227;
       char_a = evt.target.result.charCodeAt(lectura);
       var fecha_d = char_a;
-      lectura = 228;
+      lectura = inicio_fecha_msec[tipo_fichero];//228
       char_a = evt.target.result.charCodeAt(lectura);
       char_b = evt.target.result.charCodeAt(lectura+1);
       char_c = evt.target.result.charCodeAt(lectura+2);
@@ -66,11 +90,11 @@ function readBlob() {
       fecha_msec -= fecha_resto;
       var fecha_sec = fecha_msec / 1000;
       fecha_msec = fecha_resto;
-      lectura = 284;
+      lectura = inicio_visible_alto[tipo_fichero];//284;
       char_a = evt.target.result.charCodeAt(lectura);
       char_b = evt.target.result.charCodeAt(lectura+1);
       var alto_visible = (char_a << 8) + char_b;
-      lectura = 286;
+      lectura = inicio_visible_ancho[tipo_fichero];//286;
       char_a = evt.target.result.charCodeAt(lectura);
       char_b = evt.target.result.charCodeAt(lectura+1);
       var ancho_visible = (char_a << 8) + char_b;
@@ -85,7 +109,7 @@ function readBlob() {
       var ctx_visible = c_visible.getContext("2d");
       var imgData_visible = ctx_visible.createImageData(canvas_visible.width, canvas_visible.height);
 
-      lectura=inicio_visible;
+      lectura=inicio_visible_img[tipo_fichero];
       for (i = 0; i < imgData_visible.data.length; i += 4) {
         char_a = evt.target.result.charCodeAt(lectura);
         char_b = evt.target.result.charCodeAt(lectura+1);
@@ -97,21 +121,21 @@ function readBlob() {
         imgData_visible.data[i+2] = bbb;
         imgData_visible.data[i+3] = 255;
         lectura += 2;
-        if(lectura == 614400+inicio_visible){
-          lectura = inicio_visible;
+        if(lectura == 614400+inicio_visible_img[tipo_fichero]){
+          lectura = inicio_visible_img[tipo_fichero];
         }
       }
       ctx_visible.putImageData(imgData_visible, 0, 0);
 
 
 
-      var inicio_ir = 86 + inicio_visible + 614400;
+      //var inicio_ir = inicio_ir_img[tipo_fichero];//86 + inicio_visible + 614400;
       var c_ir1 = document.getElementById("canvas_ir1");
       var ctx_ir1 = c_ir1.getContext("2d");
       var imgData_ir1 = ctx_ir1.createImageData(canvas_ir1.width, canvas_ir1.height);
       var ir1_power;
       // Inicializar para conseguir el máximo y el mínimo
-      lectura=inicio_ir;
+      lectura=inicio_ir_img[tipo_fichero];
       char_a = evt.target.result.charCodeAt(lectura);
       char_b = evt.target.result.charCodeAt(lectura+1);
       ir1_power = ((char_a) << 8) + char_b;
@@ -119,7 +143,7 @@ function readBlob() {
       var ir1_power_min = ir1_power;
       //alert("Valor: " + ir1_power + "   " + (((char_a) << 8) + char_b));
 
-      lectura=inicio_ir;
+      lectura=inicio_ir_img[tipo_fichero];;
       for (i = 0; i < imgData_ir1.data.length; i += 4) {
         char_a = evt.target.result.charCodeAt(lectura);
         char_b = evt.target.result.charCodeAt(lectura+1);
@@ -137,8 +161,8 @@ function readBlob() {
           ir1_power_min = ir1_power;
         }
         lectura += 2;
-        if(lectura == 38400 + inicio_ir){
-          lectura = inicio_ir;
+        if(lectura == 38400 + inicio_ir_img[tipo_fichero]){
+          lectura = inicio_ir_img[tipo_fichero];
         }
       }
 
@@ -156,7 +180,7 @@ function readBlob() {
       var ir_base = ir1_power_min;
       //alert("Máximo: " + ir1_power_max + " Mínimo: " + ir1_power_min + " Rango: " + ir_rango + " Base: " + ir_base);
 
-      lectura=inicio_ir;
+      lectura=inicio_ir_img[tipo_fichero];
       for (i = 0; i < imgData_ir2.data.length; i += 4) {
         char_a = evt.target.result.charCodeAt(lectura);
         char_b = evt.target.result.charCodeAt(lectura+1);
@@ -184,8 +208,8 @@ function readBlob() {
         imgData_ir2.data[i+2] = ir2_pixel;
         imgData_ir2.data[i+3] = 255;
         lectura += 2;
-        if(lectura == 38400 + inicio_ir){
-          lectura = inicio_ir;
+        if(lectura == 38400 + inicio_ir_img[tipo_fichero]){
+          lectura = inicio_ir_img[tipo_fichero];
         }
       }
 
